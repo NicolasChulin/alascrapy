@@ -26,6 +26,7 @@ class InlaItem(Item):
     fax = Field()
     website = Field()
     address = Field()
+    city = Field()
     description = Field()
     created_at = Field()
 
