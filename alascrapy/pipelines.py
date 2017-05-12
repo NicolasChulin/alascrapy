@@ -24,11 +24,16 @@ class MysqlWriterPipeline(object):
             self.pydb.create(table,item)
             return item
 
-    # def process_item(self, item, spider):
-    #     table = 'baike'
-    #     if self.pydb.get_count(table,{'url':item['url']}) > 0:
-    #         raise DropItem('Duplicate item found: %s' % item['url'])
-    #     else:
-    #         item.update({'created_at':datetime.now()})
-    #         self.pydb.create(table,item)
-    #         return item
+
+
+class MysqlUpdatePipeline(object):
+
+    def __init__(self):
+        self.pydb = Pydb()
+
+    def process_item(self, item, spider):
+        table = 'inla'
+        if item['email']:
+            self.pydb.update(table,{'email':item['email']},{'user_id':item['user_id'],'city':item['city']})
+
+        return item

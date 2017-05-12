@@ -30,3 +30,9 @@ class InlaItem(Item):
     description = Field()
     created_at = Field()
 
+
+class UpinlaItem(Item):
+    user_id = Field()
+    email = Field()
+    city = Field()
+
