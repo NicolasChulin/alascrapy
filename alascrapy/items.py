@@ -36,3 +36,16 @@ class UpinlaItem(Item):
     email = Field()
     city = Field()
 
+
+class CcypItem(Item):
+    name = Field()
+    user_id = Field()
+    url = Field()
+    city = Field()
+    main_category = Field()
+    sub_category = Field()
+    email = Field()
+    phone = Field()
+    website = Field()
+    address = Field()
+    created_at = Field()

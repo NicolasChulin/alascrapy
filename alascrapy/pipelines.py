@@ -9,6 +9,8 @@ import json
 from datetime import datetime
 from alascrapy.dblink import Pydb
 from scrapy.exceptions import DropItem
+from scrapy import log
+
 
 class MysqlWriterPipeline(object):
 
@@ -16,12 +18,14 @@ class MysqlWriterPipeline(object):
         self.pydb = Pydb()
 
     def process_item(self, item, spider):
-        table = 'inla'
+        # table = 'inla'
+        table = 'ccyp'
         if self.pydb.get_count(table,{'user_id':item['user_id'],'city':item['city']}) > 0:
             raise DropItem('Duplicate item found: %s' % item['url'])
         else:
             item.update({'created_at':datetime.now()})
             self.pydb.create(table,item)
+            spider.log('=====>url:%s......Done' % item['url'],level=log.INFO)
             return item
 
 

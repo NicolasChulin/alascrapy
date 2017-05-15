@@ -27,6 +27,6 @@ DEFAULT_DB = {
 #USER_AGENT = 'alascrapy (+http://www.yourdomain.com)'
 
 ITEM_PIPELINES = {
-    # 'alascrapy.pipelines.MysqlWriterPipeline': 800,
-    'alascrapy.pipelines.MysqlUpdatePipeline': 800,
+    'alascrapy.pipelines.MysqlWriterPipeline': 800,
+    # 'alascrapy.pipelines.MysqlUpdatePipeline': 800,
 }

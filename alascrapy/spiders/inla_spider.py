@@ -7,31 +7,51 @@ import re
 from alascrapy.dblink import Pydb
 
 
+class InlattSprider(Spider):
+    name = 'inaltt'
+
+    def start_requests(self):
+        # url = 'http://www.chineseinsfbay.com/company.html'
+        url = 'http://www.nychinaren.com/company.html'
+
+        header = {
+            'User-Agent':'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.133 Safari/537.36'
+        }
+
+        # print(cook)
+        return [Request(url=url,callback=self.parse,headers=header)]
+
+    def parse(self,response):
+        print('-----------status is : %s------------' % response.status)
+        print(response)
+
+
 class InlaLawyerSpider(Spider):
     name = 'inlalawyer'
     # allowed_domains = ['chineseinla.com']
     # start_urls = ['http://www.chineseinla.com/lawyer/task_list/catid_2.html']
-    start_urls = [
-        'http://www.chineseinla.com/company.html', # Los Angeles
-        'http://lv.nychinaren.com/company.html',  # Las Vegas
-        'http://sd.nychinaren.com/company.html',  # Santiago
+    # start_urls = [
+    #     # 'http://www.chineseinla.com/company.html', # Los Angeles
+    #     # 'http://lv.nychinaren.com/company.html',  # Las Vegas
+    #     # 'http://sd.nychinaren.com/company.html',  # Santiago
 
-        'http://www.seattlechinaren.com/company.html', # Seattle
-        'http://pa.nychinaren.com/company.html',  # Philadelphia
-        'http://chicago.nychinaren.com/company.html'  # Chicago
-        'http://tx.nychinaren.com/company.html', # Houston
-        'http://atlanta.nychinaren.com/company.html', # Atlanta
-        # 'http://www.chineseinsfbay.com/company.html', # San Francisco fobiden
-        # 'http://www.nychinaren.com/company.html'  # New York fobiden
+    #     # 'http://www.seattlechinaren.com/company.html', # Seattle
+    #     # 'http://pa.nychinaren.com/company.html',  # Philadelphia
+    #     # 'http://chicago.nychinaren.com/company.html'  # Chicago
+    #     # 'http://tx.nychinaren.com/company.html', # Houston
+    #     # 'http://atlanta.nychinaren.com/company.html', # Atlanta
 
-        'http://boston.nychinaren.com/company.html', # Boston
-        'http://hi.nychinaren.com/company.html' # Hawaii
-        'http://dallas.nychinaren.com/company.html', # Dallas
-        'http://florida.nychinaren.com/company.html', # Florida
-        'http://van.nychinaren.com/company.html', # Vancouver
-        'http://dc.nychinaren.com/company.html', # dahuafu
-        'http://oz.nychinaren.com/company.html', # Sydney
-    ]
+    #     'http://www.chineseinsfbay.com/company.html', # San Francisco fobiden
+    #     'http://www.nychinaren.com/company.html'  # New York fobiden
+
+    #     # 'http://boston.nychinaren.com/company.html', # Boston
+    #     # 'http://hi.nychinaren.com/company.html' # Hawaii
+    #     # 'http://dallas.nychinaren.com/company.html', # Dallas
+    #     # 'http://florida.nychinaren.com/company.html', # Florida
+    #     # 'http://van.nychinaren.com/company.html', # Vancouver
+    #     # 'http://dc.nychinaren.com/company.html', # dahuafu
+    #     # 'http://oz.nychinaren.com/company.html', # Sydney
+    # ]
     cityDic = {
         'chineseinla.com':{
             'city':'Los Angeles',
@@ -102,6 +122,20 @@ class InlaLawyerSpider(Spider):
             'host':'http://oz.nychinaren.com'
         }
     }
+
+    def start_requests(self):
+        urls = [
+            'http://www.chineseinsfbay.com/company.html', # San Francisco fobiden
+            'http://www.nychinaren.com/company.html'  # New York fobide
+        ]
+
+        header = {
+            'User-Agent':'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.133 Safari/537.36'
+        }
+
+        for url in urls:
+            yield Request(url=url,callback=self.parse,headers=header)
+
 
     def from_url_get_id(self,url):
         urls = url.split('id_')
