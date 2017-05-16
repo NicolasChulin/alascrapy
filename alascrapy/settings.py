@@ -26,7 +26,12 @@ DEFAULT_DB = {
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'alascrapy (+http://www.yourdomain.com)'
 
+
+USER_AGENT = 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.133 Safari/537.36'
+
 ITEM_PIPELINES = {
     # 'alascrapy.pipelines.MysqlWriterPipeline': 800,
     'alascrapy.pipelines.MysqlUpdatePipeline': 800,
 }
+
+
