@@ -6,52 +6,41 @@ from scrapy import log,Spider,Request
 import re
 from alascrapy.dblink import Pydb
 
+import logging
 
-class InlattSprider(Spider):
-    name = 'inaltt'
-
-    def start_requests(self):
-        # url = 'http://www.chineseinsfbay.com/company.html'
-        url = 'http://www.nychinaren.com/company.html'
-
-        header = {
-            'User-Agent':'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.133 Safari/537.36'
-        }
-
-        # print(cook)
-        return [Request(url=url,callback=self.parse,headers=header)]
-
-    def parse(self,response):
-        print('-----------status is : %s------------' % response.status)
-        print(response)
+logging.basicConfig(level=logging.DEBUG,
+    format='%(asctime)s %(filename)s %(levelname)s %(message)s',
+    datefmt='%Y-%m-%d %H:%M:%S',
+    filename='inla.log',
+    filemode='w')
 
 
 class InlaLawyerSpider(Spider):
     name = 'inlalawyer'
     # allowed_domains = ['chineseinla.com']
     # start_urls = ['http://www.chineseinla.com/lawyer/task_list/catid_2.html']
-    # start_urls = [
-    #     # 'http://www.chineseinla.com/company.html', # Los Angeles
-    #     # 'http://lv.nychinaren.com/company.html',  # Las Vegas
-    #     # 'http://sd.nychinaren.com/company.html',  # Santiago
+    start_urls = [
+        # 'http://www.chineseinla.com/company.html', # Los Angeles
+        # 'http://lv.nychinaren.com/company.html',  # Las Vegas
+        # 'http://sd.nychinaren.com/company.html',  # Santiago
 
-    #     # 'http://www.seattlechinaren.com/company.html', # Seattle
-    #     # 'http://pa.nychinaren.com/company.html',  # Philadelphia
-    #     # 'http://chicago.nychinaren.com/company.html'  # Chicago
-    #     # 'http://tx.nychinaren.com/company.html', # Houston
-    #     # 'http://atlanta.nychinaren.com/company.html', # Atlanta
+        # 'http://www.seattlechinaren.com/company.html', # Seattle
+        # 'http://pa.nychinaren.com/company.html',  # Philadelphia
+        # 'http://chicago.nychinaren.com/company.html'  # Chicago
+        # 'http://tx.nychinaren.com/company.html', # Houston
+        # 'http://atlanta.nychinaren.com/company.html', # Atlanta
 
-    #     'http://www.chineseinsfbay.com/company.html', # San Francisco fobiden
-    #     'http://www.nychinaren.com/company.html'  # New York fobiden
+        'http://www.chineseinsfbay.com/company.html', # San Francisco fobiden
+        'http://www.nychinaren.com/company.html'  # New York fobiden
 
-    #     # 'http://boston.nychinaren.com/company.html', # Boston
-    #     # 'http://hi.nychinaren.com/company.html' # Hawaii
-    #     # 'http://dallas.nychinaren.com/company.html', # Dallas
-    #     # 'http://florida.nychinaren.com/company.html', # Florida
-    #     # 'http://van.nychinaren.com/company.html', # Vancouver
-    #     # 'http://dc.nychinaren.com/company.html', # dahuafu
-    #     # 'http://oz.nychinaren.com/company.html', # Sydney
-    # ]
+        # 'http://boston.nychinaren.com/company.html', # Boston
+        # 'http://hi.nychinaren.com/company.html' # Hawaii
+        # 'http://dallas.nychinaren.com/company.html', # Dallas
+        # 'http://florida.nychinaren.com/company.html', # Florida
+        # 'http://van.nychinaren.com/company.html', # Vancouver
+        # 'http://dc.nychinaren.com/company.html', # dahuafu
+        # 'http://oz.nychinaren.com/company.html', # Sydney
+    ]
     cityDic = {
         'chineseinla.com':{
             'city':'Los Angeles',
@@ -65,11 +54,19 @@ class InlaLawyerSpider(Spider):
             'city':'San Francisco',
             'host':'http://www.chineseinsfbay.com'
         },
+        'www.chineseinsfbay.com':{
+            'city':'San Francisco',
+            'host':'http://www.chineseinsfbay.com'
+        },
         'sd.nychinaren.com':{
             'city':'Santiago',
             'host':'http://sd.nychinaren.com'
         },
         'nychinaren.com':{
+            'city':'New York',
+            'host':'http://www.nychinaren.com'
+        },
+        'www.nychinaren.com':{
             'city':'New York',
             'host':'http://www.nychinaren.com'
         },
@@ -123,20 +120,6 @@ class InlaLawyerSpider(Spider):
         }
     }
 
-    def start_requests(self):
-        urls = [
-            'http://www.chineseinsfbay.com/company.html', # San Francisco fobiden
-            'http://www.nychinaren.com/company.html'  # New York fobide
-        ]
-
-        header = {
-            'User-Agent':'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.133 Safari/537.36'
-        }
-
-        for url in urls:
-            yield Request(url=url,callback=self.parse,headers=header)
-
-
     def from_url_get_id(self,url):
         urls = url.split('id_')
         ids  =  urls[1].split('/')
@@ -146,21 +129,16 @@ class InlaLawyerSpider(Spider):
     def parse(self,response):
         lis = response.xpath("//*[@id='nav']/li")
         navas = lis.xpath(".//div[@class='category_list']/dl/dd/a/@href").extract()
-        # print('===========download_slot===>')
-        # print('download_slot:%s ' % response.meta['download_slot'])
         cityinfo = self.cityDic[response.meta['download_slot']]
-        # print(cityinfo)
         for n in navas:
             url = cityinfo['host']+n
-            # print(url)
             yield Request(url=url, callback=self.parse_pages)
 
 
     def parse_pages(self,response):
         lawyers_pos = response.xpath("//*[@id='category_content']/dl[@class='regular_company']")
         cityinfo = self.cityDic[response.meta['download_slot']]
-        # print(response.meta['download_slot'])
-        # print(cityinfo)
+
 
         for lawyer in lawyers_pos:
             try:
@@ -306,12 +284,14 @@ class ExperSprider(Spider):
         # liss = [34363]
         table = 'inla'
         pydb = Pydb()
-        for n in range(num):
-            n += 1
-            lis = pydb.get_first_item(table,{'id':n})
-            yield Request(url=lis['url'], callback=self.parse)
+        for n in range(51072,74828):
+            lis = pydb.filter(table,{'id':n})
+            if len(lis) == 1:
+                yield Request(url=lis[0]['url'], callback=self.parse,meta={'id':n})
+
 
     def parse(self,response):
+        aid = response.meta['id']
         try:
             item = UpinlaItem()
             cityinfo = self.cityDic[response.meta['download_slot']]
@@ -330,12 +310,14 @@ class ExperSprider(Spider):
 
             item['email'] = self.get_email(citems) if len(citems)!=0 else None
 
-            self.log('=====>url:%s......None' % response.url,level=log.INFO)
+            self.log('=====>id:%s......Done' % aid,level=log.INFO)
+            logging.info("id:%s,email:%s,user_id:%s,city:%s" % (aid,item['email'],item['user_id'],item['city']))
             yield item
 
         except Exception as e:
             item['email'] = None
-            self.log('=====>url:%s......Error' % response.url,level=log.WARNING)
+            logging.info("id:%s,email:%s,user_id:%s,city:%s" % (aid,item['email'],item['user_id'],item['city']))
+            self.log('=====>id:%s......Error' % aid,level=log.INFO)
             yield item
 
 
