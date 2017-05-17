@@ -33,3 +33,4 @@ class BusinessItem(Item):
     website = Field()
     address = Field()
     created_at = Field()
+

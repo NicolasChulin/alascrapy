@@ -18,7 +18,7 @@ class MysqlWriterPipeline(object):
         self.pydb = Pydb()
 
     def process_item(self, item, spider):
-        table = 'usalife'
+        # table = 'inla'
         # table = 'ccyp'
         if self.pydb.get_count(table,{'user_id':item['user_id'],'city':item['city']}) > 0:
             raise DropItem('Duplicate item found: %s' % item['url'])
