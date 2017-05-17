@@ -15,29 +15,13 @@ class BaikePythonItem(Item):
     created_at = Field()
 
 
-class InlaItem(Item):
-    name = Field()
-    user_id = Field()
-    url = Field()
-    main_category = Field()
-    sub_category = Field()
-    email = Field()
-    phone = Field()
-    fax = Field()
-    website = Field()
-    address = Field()
-    city = Field()
-    description = Field()
-    created_at = Field()
-
-
 class UpinlaItem(Item):
     user_id = Field()
     email = Field()
     city = Field()
 
 
-class CcypItem(Item):
+class BusinessItem(Item):
     name = Field()
     user_id = Field()
     url = Field()

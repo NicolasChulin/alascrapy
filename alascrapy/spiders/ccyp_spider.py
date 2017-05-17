@@ -39,15 +39,15 @@ class CcypSpider(Spider):
 
 
     def parse_page_detail(self,response):
-        item = CcypItem()
+        item = BusinessItem()
         item['name'] = response.xpath("//*[@class='header-banner']/h2/span/text()").extract()[0].encode('utf8')
         item['url'] = response.url.encode('utf8')
         item['city'] = 'San Francisco'
         # item['city'] = 'Los Angeles'
 
         categorys = response.xpath("//*[@class='breadcrumb']/li/a/text()").extract()
-        item['main_category'] = categorys[-2].strip().encode('utf-8')
-        item['sub_category'] = categorys[-1].strip()[3:].encode('utf-8')
+        item['main_category'] = categorys[-2].strip().encode('utf8')
+        item['sub_category'] = categorys[-1].strip()[3:].encode('utf8')
 
         urls = response.url.split('/')
         item['user_id'] = urls[-2]

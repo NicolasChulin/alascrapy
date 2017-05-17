@@ -142,7 +142,7 @@ class InlaLawyerSpider(Spider):
 
         for lawyer in lawyers_pos:
             try:
-                item = InlaItem()
+                item = BusinessItem()
 
                 atag = lawyer.xpath(".//dt/div")
                 url = atag.xpath(".//a[1]/@href").extract()[0].encode('utf8')

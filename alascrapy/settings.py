@@ -28,10 +28,11 @@ DEFAULT_DB = {
 
 
 USER_AGENT = 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.133 Safari/537.36'
+COOKIES_ENABLED = False
 
 ITEM_PIPELINES = {
-    # 'alascrapy.pipelines.MysqlWriterPipeline': 800,
-    'alascrapy.pipelines.MysqlUpdatePipeline': 800,
+    'alascrapy.pipelines.MysqlWriterPipeline': 800,
+    # 'alascrapy.pipelines.MysqlUpdatePipeline': 800,
 }
 
 
