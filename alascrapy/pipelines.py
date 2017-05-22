@@ -37,7 +37,6 @@ class MysqlUpdatePipeline(object):
 
     def process_item(self, item, spider):
         table = 'inla'
-        if item['email']:
-            self.pydb.update(table,{'email':item['email']},{'user_id':item['user_id'],'city':item['city']})
-
+        self.pydb.update(table,{'phone':item['phone'],'main_category':item['main_category'],'sub_category':item['sub_category']},{'aid':item['aid']})
+        spider.log('=====>url:%s......Done' % item['url'],level=log.INFO)
         return item

@@ -45,6 +45,10 @@ class Pydb(object):
         except:
             self.conn.rollback()
 
+    def query(self,sql):
+        self.cursor.execute(sql)
+        return self.cursor.fetchall()
+
     def filter(self,tb_name,whered):
         wheres = self.get_wheres(whered)
         sql="SELECT * FROM %s WHERE %s" % (tb_name,wheres)

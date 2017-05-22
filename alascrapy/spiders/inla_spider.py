@@ -158,7 +158,8 @@ class InlaLawyerSpider(Spider):
                 if len(infos) != 0:
 
                     if len(infos.xpath(".//div[@class='list_phone']")) != 0:
-                        phone = infos.xpath(".//div[@class='list_phone']/text()").extract()[0].encode('utf8')
+                        phones = infos.xpath(".//div[@class='list_phone']/text()").extract()
+                        phone = ';'.join(phones).strip().encode('utf8')
                         item['phone'] = phone
 
                     category = infos.xpath(".//div[@class='list_category']")
@@ -321,5 +322,64 @@ class ExperSprider(Spider):
             yield item
 
 
+class FillEmptySpider(Spider):
+
+    name = 'fillempty'
+
+    def get_phone(phoneStr):
+        phoneStr = str(phoneStr).strip().replace(' ','')
+        if not phoneStr or phoneStr == 'None':
+            return 'None'
+
+        phoneStr = re.sub(r'[\.\-\(\)）（]+','#',phoneStr)
+
+        relist = [
+            r"(1#[0-9]{3}#[0-9]{3}#[0-9]{4})",
+            r"([0-9]{3}#[0-9]{3}#[0-9]{4})",
+            r"([0-9]{10,11})"
+        ]
+
+        phones = []
+        for res in relist:
+            result = re.findall(res,phoneStr)
+            phones.extend(result)
+            for s in result:
+                phoneStr.replace(s,'')
+
+        return ';'.join(phones).replace('#','')
+
+    def start_requests(self):
+        table = 'inla'
+        pydb = Pydb()
+        sql = "SELECT id,url FROM %s WHERE ISNULL(phone) or phone=''" % table
+        inlaitems = pydb.query(sql)
+        for litem in inlaitems:
+            yield Request(url=litem['url'], callback=self.parse,meta={'id':litem['id']})
+
+
+    def parse(self,response):
+        item = UpinlaItem()
+        item['main_category'] = ''
+        item['sub_category'] = ''
+        item['phone'] = ''
+        item['aid'] = response.meta['id']
+        try:
+            item['main_category'] = response.xpath("//*[@class='pathway']/a[3]/text()").extract()[0].encode('utf8')
+            comps = response.xpath("//*[@class='map_title_box']")
+
+            subpos = comps.xpath(".//div[contains(@style,'background: url(/templates/horse/images/company_detail.png) no-repeat 0px -205px')]")
+            if len(subpos) != 0:
+                item['sub_category'] = ';'.join(subpos.xpath(".//a/text()").extract()).encode('utf8')
+
+            phonepos = comps.xpath(".//div[contains(@style,'background: url(/templates/horse/images/company_detail.png) no-repeat 0px -234px')]/text()")
+            if len(phonepos) != 0:
+                item['phone'] = ';'.join(phonepos.extract()).strip().encode('utf8')
+                item['phone'] = self.get_phone(item['phone'])
+
+            yield item
+
+        except Exception as e:
+            logging.info("error....url:%s" % item['url'])
+            yield item
 
 

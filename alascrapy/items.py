@@ -16,9 +16,10 @@ class BaikePythonItem(Item):
 
 
 class UpinlaItem(Item):
-    user_id = Field()
-    email = Field()
-    city = Field()
+    aid = Field()
+    phone = Field()
+    main_category = Field()
+    sub_category = Field()
 
 
 class BusinessItem(Item):
